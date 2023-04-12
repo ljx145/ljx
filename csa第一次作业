@@ -1,0 +1,96 @@
+import java.util.Scanner;
+
+import static java.lang.Math.pow;
+
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("1、B 2、B 3、D 4、A 5、D ");
+        int n;
+        System.out.println("编程题第一题 打印三角：");
+        System.out.print("请输入三角形的行数n：");
+        Scanner in=new Scanner(System.in );
+        n=in.nextInt();
+        showTriangle(n);//打印三角形
+        System.out.println("----------------------------");
+        System.out.println("编程题第二题 颠倒字符串：");
+        System.out.println("输入要反转的字符串：");
+        in.nextLine();//吸收上一个输入留在缓存区的回车
+        String s = in.nextLine();
+        System.out.println(reverseString(s));//打印反转后的字符串
+        System.out.println("----------------------------");
+        System.out.println("编程题第三题 回文数判断：");
+        System.out.println("请输入要判断的数字：");
+        int num=in.nextInt();
+        if(isPalindrome(num)){
+            System.out.println("是回文数");
+        }
+        else{
+            System.out.println("不是回文数");
+        }
+        System.out.println("----------------------------");
+        System.out.println("编程题第四题 水仙花数：");
+        shuiXianHua();//打印所有水仙花数
+        System.out.println("----------------------------");
+        System.out.println("编程题第五题 最值：");
+        System.out.println("输入包含10个整数的数组：");
+        int []nums=new int[10];
+        for(int i=0;i<10;i++)
+            nums[i]=in.nextInt();
+        arraysDemo(nums);//打印数组的最值
+    }
+    public static void showTriangle(int n){//打印三角形
+        for(int i=1;i<=n;i++) {
+            for(int j=0;j<n-i;j++){
+                System.out.print(' ');
+            }
+            for(int k=0;k<2*i-1;k++) {
+                System.out.print('*');
+            }
+            System.out.println();
+        }
+    }
+    public static String reverseString(String s){//反转字符串
+        char[] chars=s.toCharArray();
+        for(int i=0;i<s.length();i++){
+            chars[i]=s.charAt(s.length()-i-1);
+        }
+        s=String.valueOf(chars);
+        return s;
+    }
+    public static boolean isPalindrome(int num){//判断回文数
+        boolean flag=false;
+        String s1=String.valueOf(num);
+        if(s1.equals(reverseString(s1))){
+            flag=true;
+        }
+        return flag;
+    }
+    public static void shuiXianHua(){//打印水仙花数
+        for(int i=100;i<1000;i++)
+        {
+            int j=i;
+            int sum=0;
+            while(true){
+                sum+=pow(j%10,3);
+                j=j/10;
+                if(j==0)
+                    break;
+            }
+            if(sum==i)
+                System.out.print(i+" ");
+        }
+    }
+    public static void arraysDemo(int []nums){
+        int n= nums.length;
+        int max=Integer.MIN_VALUE;
+        int min=Integer.MAX_VALUE;
+        for(int i=0;i<n;i++)
+        {
+            if(nums[i]<min)
+                min=nums[i];
+            if(nums[i]>max)
+                max=nums[i];
+        }
+        System.out.println("该数组的最大值为："+max+"最小值为："+min);
+    }
+}
