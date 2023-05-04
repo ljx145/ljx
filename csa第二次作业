@@ -1,0 +1,344 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner in=new Scanner(System.in);
+
+        System.out.println("----------第一题------------");
+        Monkey monkey=new Monkey("孙悟空");
+        People people=new People("六小龄童");
+        monkey.speak();//调用Monkey类的speak()方法
+        people.speak();//调用People类的speak()方法
+        people.think();//调用People类的think()方法
+
+        System.out.println("----------第二题------------");
+        Car car=new Car(4,1500,6);
+        Car car1=new Car(4,1500,4);
+        Truck truck=new Truck(6,3000,4,3000);
+        Truck truck1=new Truck(6,3000,3,6000);
+        //调用方法打印车辆信息
+        car.carInfo();
+        car1.carInfo();
+        truck.truckInfo();
+        truck1.truckInfo();
+
+        System.out.println("----------第三题------------");
+        System.out.println("请输入你想要相加的两个数：");
+        System.out.print("a=");
+        String a=in.next();
+        System.out.print("b=");
+        String b=in.next();
+        String c=getSum(a,b);
+        System.out.println("两数之和a+b为："+c);
+
+        System.out.println("----------第四题------------");
+        System.out.print("请输入网格有多少行：");
+        int m=in.nextInt();
+        System.out.print("请输入网格有多少列：");
+        int n=in.nextInt();
+        System.out.println("一共有"+uniquePaths(m+n-2,m-1)+"种路径");
+
+        System.out.println("----------第五题------------");
+        System.out.println("请输入一共有多少个字符串n：");
+        //输入一共有多少个字符串
+        int strNumber=in.nextInt();
+        String []strs=new String[strNumber];
+        System.out.println("输入你要查找的字符串(回车结束一个字符串的输入）：");
+        //读取上一个留下来的换行，避免影响下一个字符串的读取
+        in.nextLine();
+        //输入字符串存到字符串组中
+        for(int i=0;i<strNumber;i++){
+            strs[i]=in.nextLine();
+        }
+        System.out.println("字符串组的公共前缀为(空字符串表示没有公共前缀)："+longestCommonPrefix(strs));
+    }
+
+
+
+                                    //第一题所用的类和方法
+
+    //创建猴子类
+    public static class Monkey {
+        private String name;
+
+        //空参构造
+        public Monkey() {
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        //全参构造
+        public Monkey(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+        public void speak(){
+            System.out.println("咿咿呀呀......");
+        }
+    }
+
+    //用人去继承猴子
+    public static class People extends Monkey {
+        //空参构造
+        public People() {
+        }
+
+        //全参构造
+        public People(String name) {
+            super(name);
+        }
+
+        @Override
+        public void speak(){
+            System.out.println("小样儿，不错嘛！会说话了！");
+        }
+        public void think(){
+            System.out.println("别说话！认真思考！");
+        }
+    }
+
+
+
+
+                                    //创建第二道题的类和方法
+
+    //创建交通工具类
+    public static class Vehicle {
+        private int wheelsNumber;
+        private double weight;
+
+        //空参构造
+        public Vehicle() {
+        }
+
+        //全参构造
+        public Vehicle(int wheelsNumber, double weight) {
+            this.wheelsNumber = wheelsNumber;
+            this.weight = weight;
+        }
+
+        public int getWheelsNumber() {
+            return wheelsNumber;
+        }
+
+        public void setWheelsNumber(int wheelsNumber) {
+            this.wheelsNumber = wheelsNumber;
+        }
+
+        public double getWeight() {
+            return weight;
+        }
+
+        public void setWeight(double weight) {
+            this.weight = weight;
+        }
+    }
+
+    //小车继承交通工具
+    public static class Car extends Vehicle{
+        private int loader;
+        //宏定义一个小车的最大载人数
+        public final int maxCarLoader=5;
+
+        //空参构造
+        public Car() {
+        }
+
+        //全参构造
+        public Car(int wheelsNumber, double weight, int loader) {
+            super(wheelsNumber, weight);
+            this.loader=loader;
+        }
+
+        public int getLoader() {
+            return loader;
+        }
+
+        public void setLoader(int loader) {
+            this.loader=loader;
+        }
+        //定义一个方法用来输出车辆信息
+        public void carInfo(){
+            System.out.println("车轮子个数："+getWheelsNumber()+"  车重："+getWeight());
+            System.out.print("这是一辆小车，能载"+maxCarLoader+"人，实载"+getLoader()+"人");
+            //对超员进行判定
+            if(getLoader()>maxCarLoader){
+                System.out.println("，你超员了！！！");
+            }else{
+                System.out.println();//没有超员就换行
+            }
+            System.out.println("------------------------------");
+        }
+    }
+
+    //卡车继承交通工具类
+    public static class Truck extends Vehicle{
+        private int loader;
+        private double payload;
+        //宏定义卡车的载人数和载重量
+        public final int maxTruckLoader=3;
+        public final double maxTruckPayload=5000;
+        //空参构造
+        public Truck(){
+        }
+        //全参构造
+        public Truck(int wheelsNumber, double weight, int loader, double payload) {
+            super(wheelsNumber, weight);
+            this.loader=loader;
+            this.payload=payload;
+        }
+
+        public int getLoader() {
+            return loader;
+        }
+
+        public void setLoader(int loader) {
+            this.loader=loader;
+        }
+
+        public double getPayload() {
+            return payload;
+        }
+
+        public void setPayload(double payload) {
+            this.payload=payload;
+        }
+        public void truckInfo(){
+            System.out.println("车轮的个数是："+getWheelsNumber()+"  车重："+getWeight());
+            System.out.print("这是一辆卡车，能载"+maxTruckLoader+"人，实载"+getLoader()+"人");
+            //对超员进行判定
+            if(getLoader()>maxTruckLoader){
+                System.out.println("，你超员了！！！");
+            }else{
+                System.out.println();//没有超员就换行
+            }
+            System.out.print("这是一辆卡车，核载"+maxTruckPayload+"kg，你已经装载"+getPayload()+"kg");
+            //对超载进行判定
+            if(getPayload()>maxTruckPayload){
+                System.out.println("，你超载了！！！");
+            }else{
+                System.out.println();
+            }
+            System.out.println("------------------------------");
+        }
+    }
+
+
+
+
+                                    //第三题所用到的类和方法
+    public static String getSum(String a,String b) {
+        List<Integer> la = new ArrayList<>();
+        List<Integer> lb = new ArrayList<>();
+        StringBuilder c = new StringBuilder();//用StringBuilder来拼接字符串更快一些
+        //将得到的两个字符串倒序加入到链表中
+        for (int i = a.length() - 1; i >= 0; --i) {
+            la.add(a.charAt(i) - '0');
+        }
+        for (int i = b.length() - 1; i >= 0; --i) {
+            lb.add(b.charAt(i) - '0');
+        }
+        //i,j用来指向两个链表的位置
+        int i = 0, j = 0;
+        //flag用来表示相加后是否超过10，超过则为1，没有则为0
+        int flag = 0;
+        //用循环来将链表对应的数相加，有一个遍历完就结束
+        while (i != la.size() && j != lb.size()) {
+            int x=la.get(i)+lb.get(j)+flag;//加上flag，是前一位的进位
+            flag=getFlag(x);//更新flag
+            c.insert(0,x%10);//将x添加到c中
+            i++;
+            j++;
+        }
+        //对没有遍历完的a链表进行处理
+        while(i!=la.size()){
+            int x=la.get(i)+flag;
+            flag=getFlag(x);
+            c.insert(0,x%10);
+            i++;
+        }
+        //对没有遍历完的b链表进行处理
+        while(j!=lb.size()){
+            int x=lb.get(j)+flag;
+            flag=getFlag(x);
+            c.insert(0,x%10);
+            j++;
+        }
+        //如果处理完flag还为1就在前面在加个1
+        if(flag==1){
+            c.insert(0,flag);
+        }
+        return c.toString();//将c转换为String在返回
+    }
+    //定义一个方法来更新flag的值
+    public static int getFlag(int x){
+        if(x>=10){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
+
+
+
+                                    //第四题的方法和类
+    public static int uniquePaths(int n,int m){
+        m=Math.min(m,n-m);//将m设为最小值，避免计算值过大
+        int sum1=1;
+        int sum2=1;
+        //计算n到n-m+1的乘积
+        for(int i=n;i>n-m;i--){
+            sum1*=i;
+        }
+        //计算m的阶乘
+        for(int i=m;i>1;i--){
+            sum2*=i;
+        }
+        //将两数的商进行返回
+        return sum1/sum2;
+    }
+
+
+
+
+
+                                    //第五题的方法和类
+    public static String longestCommonPrefix(String []strs){
+        //如果长度为0，直接返回空字符串
+        if(strs.length==0){
+            return "";
+        }
+        //如果长度为1，直接返回这个字符串
+        if(strs.length==1){
+            return strs[0];
+        }
+        //定义一个整型的最大值
+        int minStrLength=Integer.MAX_VALUE;
+        //用定义的最大值来比较得到字符串组长度的最小值
+        for(String s:strs){
+            if(s.length()<minStrLength){
+                minStrLength=s.length();
+            }
+        }
+        //创建StringBuilder,更好的拼接
+        StringBuilder ans= new StringBuilder();
+        for(int i=0;i<minStrLength;i++){
+            for(int j=1;j<strs.length;j++){
+                //如果不相等直接返回当前的ans
+                if(strs[j].charAt(i)!=strs[j-1].charAt(i)){
+                    return ans.toString();
+                }
+            }
+            ans.append(strs[0].charAt(i));
+        }
+        return ans.toString();
+    }
+}
