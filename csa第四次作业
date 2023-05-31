@@ -1,0 +1,165 @@
+-- 1
+create table cqupt_student
+(
+    studentid varchar(10)    null,
+    name      varchar(20)    null,
+    sex       varchar(2)     null,
+    age       integer        null,
+    Fee       decimal(10, 2) null,
+    address   varchar(50)    null,
+    memo      varchar(300)   null
+);
+-- 2
+create table CourseAa
+(
+    Aa1     varchar(20)     null,
+    Aa2     integer         null,
+    Aa3     decimal(10)     null
+);
+-- 3
+create table ChooseBb
+(
+    Bb1     varchar(30)     null,
+    Bb2     integer         null,
+    Bb3     decimal(6)      null
+);
+-- 4
+alter table ChooseBb
+    add Bb4 varchar(20) default '系统测试值' not null;
+-- 5
+alter table ChooseBb
+    add Bb5  varchar(10) primary key ;
+-- 6
+create view View_Choosebb (View_Bb1,View_Bb2,View_Bb3) as
+select Bb1,Bb4,Bb5 from choosebb;
+-- 7
+drop view View_Choosebb;
+-- 8
+create index Index_bb2
+    on choosebb (Bb2);
+create index Index_bb4
+    on choosebb (Bb4 desc);
+-- 9
+drop index Index_bb2 on choosebb;
+-- 10
+create table test
+(
+    Name    varchar(20)     null,
+    Age     integer         null,
+    Score   numeric(10,2)   null,
+    Address varchar(60)     null
+);
+-- 11
+insert into test(Name, Age, Score, Address) values ('赵一',20,580.00,'重邮宿舍 12-3-5'),
+                                                   ('钱二',19,540.00,'南福苑 5-2-9'),
+                                                   ('孙三',21,555.50,'学生新区 21-5-15'),
+                                                   ('李四',22,505.00,'重邮宿舍 8-6-22'),
+                                                   ('周五',20,495.50,'学生新区 23-4-8'),
+                                                   ('吴六',19,435.00,'南福苑 2-5-12');
+-- 12
+create table test_temp
+(
+    Name    varchar(20)     null,
+    Age     integer         null,
+    Score   numeric(10,2)   null,
+    Address varchar(60)     null
+);
+-- 13
+insert into test_temp(Name, Age, Score, Address) values ('郑七',21,490.50,'重邮宿舍 11-2-1'),
+                                                   ('张八',20,560.00,'南福苑 3-3-3'),
+                                                   ('王九',10,515.00,'学生新区 19-7-1');
+-- 14
+insert into test select * from test_temp;
+-- 15
+update test
+    set Score = Score+5
+    where Age <= 20;
+-- 16
+update test
+    set Age = Age-1
+    where instr(Address,'南福苑') > 0;
+-- 17
+delete from test where Age >= 21 && Score >= 500;
+-- 18
+delete from test where Score <= 550 && instr(Address,'重邮宿舍') > 0;
+-- 19
+create table Student
+(
+    SNO     varchar(20)     null,
+    Name    varchar(10)     null,
+    Age     integer         null,
+    College varchar(30)     null
+);
+-- 20
+create table Course
+(
+    CourseID    varchar(15)     null,
+    CourseName  varchar(30)     null,
+    CourseBeforeID  varchar(15) null
+);
+-- 21
+create table Choose
+(
+    SNO     varchar(20)     null,
+    CourseID    varchar(30) null,
+    Score   decimal(5,2)    null
+);
+-- 22
+insert into Student(SNO, Name, Age, College) values('S00001','张三',20,'计算机学院'),
+                                                   ('S00002','李四',19,'通信学院'),
+                                                   ('S00003','王五',21,'计算机学院');
+-- 23
+insert into Course(CourseID, CourseName, CourseBeforeID) values('C1','计算机引论',NULL),
+                                                               ('C2','C语言','C1'),
+                                                               ('C3','数据结构','C2');
+-- 24
+insert into Choose(sno, courseid, score) values('S00001','C1',95),
+                                               ('S00001','C2',80),
+                                               ('S00001','C3',84),
+                                               ('S00002','C1',80),
+                                               ('S00002','C2',85),
+                                               ('S00003','C1',78),
+                                               ('S00003','C3',70);
+-- 25
+select SNO,Name from student where instr(College,'计算机学院');
+-- 26
+select * from Student where Age between 20 and 23;
+-- 27
+select count(*) from Student;
+-- 28
+select max(Score) from Choose where CourseID = 'C1';
+select min(Score) from Choose where CourseID = 'C1';
+select sum(Score) from Choose where CourseID = 'C1';
+select avg(Score) from Choose where CourseID = 'C1';
+-- 29
+select CourseID,CourseName from Course where ifnull(CourseBeforeID,1) = 1;
+-- 30
+select s.SNO,s.Name,c2.CourseName,c1.Score from Student s,Choose c1,Course c2
+    where s.SNO = c1.sno and c1.CourseID = c2.CourseID;
+-- 31
+select * from Student s1
+         where exists
+             (select * from Student s2
+                       where s2.Name = '张三'
+                        and s2.College = s1.College
+                        and s1.Name != '张三');
+-- 32
+select c.SNO,c.Score from Choose c
+    where c.CourseID = 'C1'
+        and exists(select * from Choose c1
+            where (c1.SNO = (select s.SNO from Student s
+                    where s.Name = '张三'
+                        and c1.CourseID = 'C1'))
+                and c.Score < c1.Score);
+-- 33
+select SNO from Choose
+    where CourseID = 'C1'
+union all
+select SNO from Choose
+    where CourseID = 'C3';
+-- 34
+select SNO from Choose
+    where CourseID = 'C1'
+union
+select SNO from Choose
+    where CourseID = 'C3';
