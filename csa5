@@ -1,0 +1,104 @@
+import java.sql.*;
+import java.sql.Connection;
+
+public class Main {
+    public static void main(String[] args) throws SQLException {
+        String url = "jdbc:mysql://localhost:3306/csa5?useSSL=false";
+        String username = "root";
+        String password = "1234";
+        Connection connection = DriverManager.getConnection(url, username, password);
+        try {
+            connection.setAutoCommit(false);
+            String sql1 = "INSERT INTO student (SNO,Name, Age, College) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(sql1)) {
+                statement.setString(1, "s001");
+                statement.setString(2, "老大");
+                statement.setInt(3, 20);
+                statement.setString(4, "计算机学院");
+                statement.executeUpdate();
+
+                statement.setString(1, "s002");
+                statement.setString(2, "老二");
+                statement.setInt(3, 19);
+                statement.setString(4, "计算机学院");
+                statement.executeUpdate();
+
+                statement.setString(1, "s003");
+                statement.setString(2, "老三");
+                statement.setInt(3, 18);
+                statement.setString(4, "计算机学院");
+                statement.executeUpdate();
+
+                statement.setString(1, "s004");
+                statement.setString(2, "老四");
+                statement.setInt(3, 17);
+                statement.setString(4, "计算机学院");
+                statement.executeUpdate();
+                System.out.println("第一题");
+                System.out.println("----------------------");
+                displayAllData(connection);
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("第二题");
+        System.out.println("----------------------");
+        displayAllData(connection);
+
+        String sql3 = "DELETE FROM student WHERE sno = 's004'";
+        PreparedStatement statement = connection.prepareStatement(sql3);
+        statement.executeUpdate();
+        System.out.println("第三题");
+        System.out.println("----------------------");
+        displayAllData(connection);
+
+        String sql4 = "SELECT * FROM student WHERE SNO = 's003'";
+        PreparedStatement statement4 = connection.prepareStatement(sql4);
+        ResultSet RS = statement4.executeQuery();
+        if (RS.next()) {
+            String name = RS.getString("Name");
+            int age = RS.getInt("Age");
+            String college = RS.getString("College");
+            System.out.println("第四题");
+            System.out.println("----------------------");
+            System.out.println("Student{sno='s003', name='" + name + "', age=" + age + ", college='" + college + "'}");
+            System.out.println("表：");
+            displayAllData(connection);
+        } else {
+            System.out.println("没有找到");
+        }
+
+        String sql5 = "UPDATE Student SET SNO=?,Name= ?, Age = ?, College = ? WHERE SNO = ?";
+        try (PreparedStatement statement5 = connection.prepareStatement(sql5)) {
+            statement5.setString(1,"s001");
+            statement5.setString(2, "老大");
+            statement5.setInt(3, 20);
+            statement5.setString(4, "通信学院");
+            statement5.setString(5, "s001");
+            statement5.executeUpdate();
+            System.out.println("第五题");
+            System.out.println("----------------------");
+            displayAllData(connection);
+        }
+    }
+    private static void displayAllData(Connection connection) throws SQLException {
+        String sql = "SELECT * FROM student";
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+            while (resultSet.next()) {
+                String sno = resultSet.getString("SNO");
+                String name = resultSet.getString("Name");
+                int age = resultSet.getInt("Age");
+                String college = resultSet.getString("College");
+                System.out.println(sno+","+name+","+age+","+college);
+            }
+            System.out.println("----------------------");
+        }
+    }
+
+}
